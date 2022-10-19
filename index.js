@@ -40,14 +40,49 @@ try{
     })
 
     app.patch('/user/update', async(req, res)=>{
-        const {ind} = req.query
-        // const filter = { index: index}
+        const body = req.body
+        
+        let updated =[]
+        if (body.length > 1) {
+            res.status(400).send({success: false, error: {message: 'Bad Request Error'}});
+        } else {
+                const newData   = users.find(user=> user._id == body._id)
+                newData.index   =body.index
+                newData.picture =body.picture
+                newData.name    =body.name
+                newData.gender  =body.gender
+                newData.email   =body.email
+                newData.phone   =body.phone
+                newData.address =body.address
+    
+                updated.push(newData)
 
-        const newData = users.find(user=> user.index == ind)
+            res.send(updated)
+        }
 
-        newData.index = ind
-        newData.name = req.body.name;
-        res.send(newData)
+        
+        
+    })
+
+
+    app.patch('/user/bulk-update', async(req, res)=>{
+        const body = req.body
+        
+        let updated =[]
+        body.forEach(e => {
+            const newData   = users.find(user=> user._id == e._id)
+            newData.index   = e.index
+            newData.picture =e.picture
+            newData.name    =e.name
+            newData.gender  =e.gender
+            newData.email   =e.email
+            newData.phone   =e.phone
+            newData.address =e.address
+
+            updated.push(newData)
+        });
+        
+        res.send(updated)
     })
 
     app.delete('/user/delete/:id', async(req, res)=>{
